@@ -77,3 +77,63 @@ INSERT INTO students(
 SELECT * FROM students;
 
 
+SELECT
+    "Select Specific columns"
+AS
+    "INFO"; 
+SELECT 
+    first_name,
+    lat_name,
+    gender
+FROM
+    students;
+
+SELECT
+    "Select Specific - version 2"
+AS
+    "INFO"; 
+SELECT 
+    students.first_name,
+    students.lat_name,
+    students.gender
+FROM
+    students;
+
+SELECT
+    "Select Specific - version 3"
+AS
+    "INFO"; 
+SELECT 
+    aula1.students.first_name,
+    aula1.students.lat_name,
+    aula1.students.gender
+FROM
+    aula1.students;
+
+
+SELECT
+    "Select Specific - version 4"
+AS
+    "INFO"; 
+SELECT 
+    aula1.students.first_name as primeiro_nome,
+    aula1.students.lat_name as segundo_nome,
+    aula1.students.gender as sexo
+FROM
+    aula1.students;
+
+    SELECT
+    "Select Specific - where"
+AS
+    "INFO"; 
+SELECT 
+    students.first_name as primeiro_nome,
+    students.lat_name as segundo_nome,
+    students.gender as sexo
+FROM
+    students
+WHERE
+    students.first_name = 'Mariana'
+
+
+
