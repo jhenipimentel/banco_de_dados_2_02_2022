@@ -29,7 +29,7 @@ WHERE
                 FROM
                     film
                 WHERE
-                film.film_id IN(
+                    film.film_id IN(
                         SELECT
                             inventory.film_id
                         FROM
@@ -48,8 +48,8 @@ WHERE
                                             customer
                                         WHERE 
                                             customer.email = 'KIM.CRUZ@sakilacustomer.org'
-                                    )
                                 )
+                        )
                 )           
-            )
+        )
 );
