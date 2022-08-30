@@ -2,6 +2,8 @@ CREATE DATABASE IF NOT EXISTS aprender_join CHARACTER SET utf8mb4;
 
 USE aprender_join;
 
+DROP TABLE IF EXISTS garcom_restaurantes;
+DROP TABLE IF EXISTS garcom;
 DROP TABLE IF EXISTS restaurantes;
 DROP TABLE IF EXISTS cidade;
 DROP TABLE IF EXISTS estado;
@@ -87,7 +89,7 @@ CREATE TABLE restaurantes(
     id_restaurante INTEGER PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(255),
     descricao VARCHAR(255),
-    id_cidade INTEGER NOT NULL,
+    id_cidade INTEGER ,
     FOREIGN KEY (id_cidade) REFERENCES cidade(id_cidade)
 );
 
@@ -175,3 +177,217 @@ INNER JOIN
     estado ON cidade.id_estado = estado.id_estado
 WHERE
     restaurantes.nome LIKE "comida M%";
+
+
+INSERT INTO restaurantes (nome, descricao) VALUES
+    ('Restaurante que nao esta em cidade alguma', 'Descricao');
+
+SELECT "Fazemdo busca com restaurantes na esquerda em registro sem relacao entre ambas tabelas"
+AS 
+    "LOG";
+SELECT 
+    *
+FROM
+    cidade
+INNER JOIN
+    restaurantes
+    ON
+        cidade.id_cidade = restaurantes.id_cidade
+WHERE
+    restaurantes.nome = 'Restaurante que nao esta em cidade alguma';
+
+SELECT "Fazemdo busca com restaurantes na esquerda em registro sem relacao entre ambas tabelas"
+AS 
+    "LOG";
+SELECT 
+    *
+FROM
+    restaurantes
+INNER JOIN
+    cidade
+    ON
+        cidade.id_cidade = restaurantes.id_cidade
+WHERE
+    restaurantes.nome = 'Restaurante que nao esta em cidade alguma';
+
+SELECT "Traga tudo"
+AS 
+    "LOG";
+SELECT 
+    cidade.nome,
+    restaurantes.nome
+FROM
+    restaurantes
+INNER JOIN
+    cidade
+    ON
+        cidade.id_cidade = restaurantes.id_cidade;
+
+
+INSERT INTO restaurantes (nome, descricao, id_cidade) VALUES
+    ('MC Donalds', '3 bigmacs ', @idCuritibaCidade),
+    ('Habbis', 'Homem bomba ', @idCuritibaCidade),
+    ('Terrazo', 'retaurante de rico ', @idCuritibaCidade),
+    ('Calabouso', ' restaurante de rico', @idCuritibaCidade);
+
+
+SELECT
+    *
+FROM
+    restaurantes
+INNER JOIN
+    cidade ON restaurantes.id_cidade = cidade.id_cidade
+WHERE
+cidade.nome = 'Curitiba';
+
+INSERT INTO restaurantes (nome, descricao, id_cidade)VALUES
+    ('Comida mineira', 'Comda tipica de minas', @idSaoPauloCidade);
+
+SELECT 
+    *
+FROM
+    restaurantes
+INNER JOIN
+    cidade ON restaurantes.id_cidade = cidade.id_cidade
+WHERE
+    cidade.nome IN('Curitiba', 'Sao Paulo');
+
+
+
+CREATE TABLE garcom(
+    id_garcom INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(255) NOT NULL,
+    experiencia ENUM('junior', 'pleno', 'senior'),
+    tipo_documento ENUM('cpf', 'rg'),
+    documento VARCHAR(255)
+);
+
+INSERT INTO 
+    garcom (nome, experiencia, tipo_documento, documento)
+VALUES
+    ('Jorge','junior','cpf',949494),
+    ('Alexandre','pleno','cpf',25949494),
+    ('Odair','pleno','cpf',949949494),
+    ('Pedro','pleno','cpf',49949494),
+    ('Gerson','pleno','cpf',49949494),
+    ('Junior','senior','cpf',49949494),
+    ('Jonathan','senior','cpf',49949494),
+    ('Augusto','senior','cpf',49949494);
+
+SELECT * FROM garcom;
+
+
+CREATE TABLE garcom_restaurantes (
+    id_restaurante INTEGER ,
+    id_garcom INTEGER ,
+    dia_semana ENUM('segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'),
+    FOREIGN KEY (id_restaurante) REFERENCES restaurantes(id_restaurante),
+    FOREIGN KEY (id_garcom) REFERENCES garcom(id_garcom)        
+);
+
+INSERT INTO 
+    garcom_restaurantes (id_restaurante, id_garcom, dia_semana)
+VALUES
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Pizza Maromba'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Jorge'),
+        'segunda'         
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Pertuti'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Jorge'),
+        'terca'
+    ),
+
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Restaurante que nao esta em cidade alguma'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Jorge'),
+        'quarta'
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Mc Donalds' LIMIT 1),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Jorge'),
+        'quinta'
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Calabouco'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Jorge'),
+        'sexta'
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Pizza Maromba'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Jorge'),
+        'segunda'         
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Pertuti'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Gerson'),
+        'terca'
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Mc Donalds' LIMIT 1),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Gerson'),
+        'quinta'
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Calabouco'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Gerson'),
+        'sexta'
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Pizza Maromba'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Odair'),
+        'segunda'         
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Pertuti'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Odair'),
+        'terca'
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Restaurante que nao esta em cidade alguma'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Odair'),
+        'quarta'
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Mc Donalds' LIMIT 1),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Odair'),
+        'quinta'
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Calabouco'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Odair'),
+        'sexta'
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Pizza Maromba'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Alexandre'),
+        'segunda'         
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Pertuti'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Alexandre'),
+        'terca'
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Restaurante que nao esta em cidade alguma'),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Alexandre'),
+        'quarta'
+    ),
+    (
+        (SELECT id_restaurante FROM restaurantes WHERE restaurantes.nome = 'Mc Donalds' LIMIT 1),
+        (SELECT id_garcom FROM garcom WHERE garcom.nome = 'Alexandre'),
+        'quinta'
+    ); 
+
+SELECT
+    * 
+FROM 
+    garcom
+INNER JOIN
+    garcom_restaurantes ON garcom.id_garcom = garcom_restaurantes.id_garcom
+INNER JOIN
+    restaurantes ON garcom_restaurantes.id_restaurante = restaurantes.id_restaurante
+WHERE
+    garcom.nome IN ('jorge', 'Odair', 'Gerson');
+
